@@ -49,6 +49,7 @@ export default class FloodScene extends Phaser.Scene {
     this.time.delayedCall(500, () => {
       this.typewriteDialog(dialogPhases.introduction[0]);
     });
+       this.scene.start("scene-level1");
   }
 
   createAtmosphericBackground() {
@@ -383,14 +384,7 @@ export default class FloodScene extends Phaser.Scene {
               this.time.delayedCall(800, () => {
                 this.scene.start("scene-level1");
               });
-            } else if (
-              text === "A flood already occured, please help save the crops!"
-            ) {
-              this.cameras.main.fade(800, 0, 0, 0);
-              this.time.delayedCall(800, () => {
-                this.scene.start("scene-level2");
-              });
-            } else {
+            }  else {
               this.advanceDialog();
             }
           });

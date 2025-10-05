@@ -598,6 +598,20 @@ export default class HeatmapScene extends Phaser.Scene {
     );
     storyBg.setStrokeStyle(3, 0xffd700);
 
+// ✅ Speaker tag (above the story box)
+ const speakerBg = this.add.rectangle(width/2-200, height-140, 160, 30, 0xff0000);
+  this.speakerTag = this.add.text(
+    width / 2-240,  // move left a bit for alignment
+    height - 140,     // a little above the box
+    "RAMESH",      // change dynamically if needed
+    {
+      fontSize: "14px",
+      fontFamily: "'Press Start 2P', Courier New",
+      color: "#ffffffff",
+      fontStyle: "bold",
+    }
+  ).setOrigin(0, 0.5);
+
     const storyText =
       "Hi I am Ramesh, you arrived at the right time here in India! we have a problem with the crops! \n\n" +
       "CRISIS: Extreme heat is destroying farmland worldwide...\n\n";

@@ -661,7 +661,7 @@ export default class Level1Scene extends Phaser.Scene {
     titleBg.setDepth(15);
 
     this.titleText = this.add
-      .text(width / 2, 35, "Flood Stories", {
+      .text(width / 2, 35, "Flood Stories - Level 1", {
         fontSize: "26px",
         fontFamily: "'Press Start 2P', Courier New",
         color: "#66ccff",

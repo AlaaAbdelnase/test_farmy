@@ -36,11 +36,11 @@ class exploreScene extends Phaser.Scene {
 
     // Load video for animals scene
     this.load.video("animals_video", "./assets/animal_video.mp4");
-    this.load.video("flood_video", "./assets/flood_video.mp4");
-    this.load.video("drought_video", "./assets/drought_video.mp4");
-    this.load.video("salinized_video", "./assets/salt_vid.mp4");
-    this.load.video("water_video", "./assets/water_video.mp4");
-    this.load.video("heatmap_video", "./assets/heat_video.mp4");
+this.load.video("flood_video", "./assets/flood2video.mp4");
+    this.load.video("drought_video", "./assets/drought0video.mp4");
+    this.load.video("salinized_video", "./assets/salt4vid.mp4");
+    this.load.video("water_video", "./assets/water2video.mp4");
+    this.load.video("heatmap_video", "./assets/heat2video.mp4");
 
     // No background music loading
   }
@@ -309,7 +309,7 @@ class exploreScene extends Phaser.Scene {
               videoHeight = 180;
           }
 
-          video.setDisplaySize(videoWidth, videoHeight);
+         
           video.setMute(true); // Mute videos to avoid autoplay restrictions
           video.play(true); // Loop the video
           video.setData("isVideo", true);
@@ -317,6 +317,7 @@ class exploreScene extends Phaser.Scene {
           sceneImage.setData("videoObject", video);
           sceneImage.setData("isAnimating", true);
           console.log("Video created and playing for", sceneData.name);
+          video.setDisplaySize(videoWidth, videoHeight);
         } catch (e) {
           console.log("Video error for", sceneData.name, ":", e);
         }

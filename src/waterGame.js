@@ -368,9 +368,9 @@ export default class WaterGame extends Phaser.Scene {
           this.feedbackText.setText(
             "Congratulations! You completed the matching game!"
           );
-          setTimeout(() => {
-            this.showContinueButton();
-          }, 2000);
+  this.time.delayedCall(2500, () => {
+    this.scene.start("FinalScene");
+  });
         } else {
           this.selectedFirstRow = null;
           setTimeout(() => {

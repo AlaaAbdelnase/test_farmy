@@ -655,12 +655,11 @@ export class PlayScene extends Phaser.Scene {
     this.createOliveBackground(width, height);
 
     this.dialogPhases = [
-      "Sam: Welcome to the Water Challenge, Henry! 💧",
-      "Henry: Hi Sam, I would like to reduce the drought in my crops, could you help?",
-      "Sam: Yes, of course!\nYour goal is to find the correct amount of water usage to revive the crops.",
-      "Sam: Choose wisely, as each drop matters!",
-      "Sam: If you choose correctly the soil turns green, otherwise brown.",
-      "Sam: Let's start and make the farm green again! Good Luck Henry.",
+      "Welcome to the Water Challenge, Henry! 💧",
+      "Hi Sam, I would like to reduce the drought in my crops, could you help?",
+      "Yes, of course!\nYour goal is to find the correct amount of water usage to revive the crops.",
+      "If you choose correctly the soil turns green, otherwise brown.\nLet's start and make the farm green again! Good Luck Henry.",
+
     ];
 
     this.dialogIndex = 0;
@@ -862,7 +861,7 @@ export class PlayScene extends Phaser.Scene {
     this.dialogContainer.add([
       dialogBoxBg,
       speakerBg,
-      speakerText,
+      this.speakerText = speakerText,
       this.dialogText,
       this.clickText,
     ]);
@@ -905,10 +904,21 @@ export class PlayScene extends Phaser.Scene {
   }
 
   typewriteDialog(text) {
+
+
+
     this.isTyping = true;
     this.currentTypewriterText = text;
     this.dialogText.setText("");
     this.clickText.setVisible(false);
+
+    if (text.startsWith("Hi Sam")){
+    this.speakerText.setText("HENRY");
+    this.speakerText.setColor("#ffffffff");
+  } else  {
+    this.speakerText.setText("SAM");
+    this.speakerText.setColor("#1c1717"); 
+  }
 
     let i = 0;
     if (this.typewriterTimer) this.typewriterTimer.remove();
@@ -935,63 +945,90 @@ export class PlayScene extends Phaser.Scene {
     this.clickText.setVisible(true);
   }
 
-  startGame() {
-    const { width, height } = sizes;
-    this.score = 0;
-    this.round = 0;
-    this.maxRounds = 5;
-    this.gameStarted = true;
+startGame() {
+  const { width, height } = sizes;
+  this.score = 0;
+  this.round = 0;
+  this.maxRounds = 5;
+  this.gameStarted = true;
 
-    // NEW: Reset Henry to his fixed position when game starts
-    if (this.farmer) {
-      this.farmer.x = 150; // Fixed left position
-      this.farmer.y = height - 150;
-    }
-
-    this.scoreText = this.add
-      .text(20, 20, "Score: 0", {
-        fontSize: "22px",
-        color: "#fff",
-        fontFamily: "Courier New",
-        stroke: "#000",
-        strokeThickness: 4,
-      })
-      .setDepth(15);
-
-    this.timerText = this.add
-      .text(width - 120, 20, "Time: 0", {
-        fontSize: "22px",
-        color: "#fff",
-        fontFamily: "Courier New",
-        stroke: "#000",
-        strokeThickness: 4,
-      })
-      .setDepth(15);
-
-    this.equationText = this.add
-      .text(width / 2, 80, "", {
-        fontSize: "20px",
-        color: "#fff",
-        backgroundColor: "#00000088",
-        padding: { x: 8, y: 4 },
-        fontFamily: "Courier New",
-      })
-      .setOrigin(0.5)
-      .setDepth(15);
-
-    this.roundText = this.add
-      .text(width / 2, 40, "", {
-        fontSize: "22px",
-        color: "#fff",
-        fontFamily: "Courier New",
-        stroke: "#000",
-        strokeThickness: 4,
-      })
-      .setOrigin(0.5)
-      .setDepth(15);
-
-    this.startNewRound();
+  if (this.farmer) {
+    this.farmer.x = 150;
+    this.farmer.y = height - 150;
   }
+
+  // === SCORE BOX ===
+  const scoreBg = this.add.rectangle(110, 50, 180, 55, 0x975603, 0.98);
+  scoreBg.setStrokeStyle(4, 0xc46602);
+  scoreBg.setDepth(15);
+
+  this.scoreText = this.add.text(110, 50, "Score: 0", {
+    fontFamily: "'Press Start 2P', Courier New",
+    fontSize: "16px",
+    color: "#ffffff",
+    align: "center",
+  })
+  .setOrigin(0.5)
+  .setDepth(16);
+
+  // === TIMER BOX ===
+  const timerBg = this.add.rectangle(width - 110, 50, 180, 55, 0x975603, 0.98);
+  timerBg.setStrokeStyle(4, 0xc46602);
+  timerBg.setDepth(15);
+
+  this.timerText = this.add.text(width - 110, 50, "Time: 0", {
+    fontFamily: "'Press Start 2P', Courier New",
+    fontSize: "16px",
+    color: "#ffffff",
+    align: "center",
+  })
+  .setOrigin(0.5)
+  .setDepth(16);
+
+  // === ROUND BOX ===
+  const roundBg = this.add.rectangle(width / 2, 50, 180, 55, 0x975603, 0.98);
+  roundBg.setStrokeStyle(4, 0xc46602);
+  roundBg.setDepth(15);
+
+  this.roundText = this.add.text(width / 2, 50, "Round: 1", {
+    fontFamily: "'Press Start 2P', Courier New",
+    fontSize: "16px",
+    color: "#ffffff",
+    align: "center",
+  })
+  .setOrigin(0.5)
+  .setDepth(16);
+
+  // === EQUATION BOX (styled like title) ===
+  const eqBg = this.add.rectangle(width / 2, 140, 700, 90, 0x975603, 0.98);
+  eqBg.setStrokeStyle(4, 0xc46602);
+  eqBg.setDepth(15);
+
+  this.equationText = this.add.text(width / 2, 140, "", {
+    fontFamily: "'Press Start 2P', Courier New",
+    fontSize: "14px",
+    color: "#ffffff",
+    align: "center",
+    wordWrap: { width: 650 },
+    lineSpacing: 6,
+  })
+  .setOrigin(0.5)
+  .setDepth(16);
+
+  // Subtle float animation
+  this.tweens.add({
+    targets: [scoreBg, timerBg, roundBg, eqBg],
+    y: "+=3",
+    duration: 2000,
+    yoyo: true,
+    repeat: -1,
+    ease: "Sine.inOut",
+  });
+
+  this.startNewRound();
+}
+
+
 
   startNewRound() {
     if (this.round >= this.maxRounds) {
@@ -1001,6 +1038,13 @@ export class PlayScene extends Phaser.Scene {
 
     this.round++;
     this.clearOptions();
+    this.tweens.add({
+  targets: [this.equationBox, this.equationText],
+  alpha: { from: 0, to: 1 },
+  duration: 800,
+  ease: "Power2",
+});
+
 
     const { width, height } = sizes;
     this.temp = Phaser.Math.Between(20, 40);
@@ -1009,8 +1053,9 @@ export class PlayScene extends Phaser.Scene {
 
     this.roundText.setText(`Round ${this.round}`);
     this.equationText.setText(
-      `Water = 10 + (Temp × 0.5) – (VegIndex × 2)\nTemp = ${this.temp}, Veg = ${this.vegIndex}`
-    );
+  `💧 Water = 10 + (Temp × 0.5) – (Veg × 2)\n🌡️ Temp = ${this.temp}     🌿 Veg = ${this.vegIndex}`
+);
+
 
     let wrong1 = Math.max(1, this.correctWater + Phaser.Math.Between(-5, 5));
     let wrong2 = Math.max(1, this.correctWater + Phaser.Math.Between(-10, 10));

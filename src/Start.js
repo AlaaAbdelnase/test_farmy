@@ -315,6 +315,20 @@ export class Game extends Phaser.Scene {
       .setScale(2.8) // bigger farmer
       .setOrigin(0.5);
 
+    const speakerTagBg =   this.add.rectangle(width / 2 - 240, height - 140, 120, 30, 0x3d2f1f)
+  speakerTagBg.setStrokeStyle(2, 0xffd700);
+ ;
+
+    this.add
+    .text(width / 2 - 240, height - 140, "MOHAMED", {
+        fontFamily: "'Press Start 2P', Courier New",
+        fontSize: "14px",
+        color: "#fff200ff",
+        fontStyle: "bold",
+    })
+    .setOrigin(0.5);
+
+
     // Optionally animate farmer (little bounce)
     this.tweens.add({
       targets: farmerTalk,

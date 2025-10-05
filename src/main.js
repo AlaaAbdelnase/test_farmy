@@ -14,6 +14,7 @@ import { SalinizedFarmScene } from "./SalinizedFarmScene.js";
 import NDVIMapScene from "./NDVImap.js";
 import { Game } from "./Start.js";
 import { LoadingManager, AssetOptimizer } from "./LoadingManager.js";
+import FinalScene from "./finalScene.js";
 
 const gameCanvas = document.getElementById("gameCanvas");
 
@@ -71,6 +72,7 @@ const config = {
     SalinizedFarmScene,
     NDVIMapScene,
     Game,
+    FinalScene
   ],
   pixelArt: true,
 };
