@@ -97,52 +97,38 @@
       src="./src/main.js?v=4444444444&t=1759664866091"
     ></script>
 
-    <!-- Service Worker Registration - TEMPORARILY DISABLED -->
+    <!-- Service Worker Registration - Optimized for deployment -->
     <script>
-      // ULTRA-AGGRESSIVE cache clearing for GitHub Pages deployment
-      console.log("🚀 ULTRA-AGGRESSIVE CACHE CLEARING STARTED...");
+      // Smart cache management for GitHub Pages deployment
+      console.log("🚀 NASA Farming Game - Initializing...");
 
-      // Clear all storage immediately
+      // Clear old caches but don't force reload
       try {
-        localStorage.clear();
-        sessionStorage.clear();
-        console.log("✅ Storage cleared");
+        if ("caches" in window) {
+          caches
+            .keys()
+            .then((cacheNames) => {
+              const oldCaches = cacheNames.filter(name => name.includes("farming-game"));
+              if (oldCaches.length > 0) {
+                console.log("🗑️ Clearing old caches:", oldCaches);
+                return Promise.all(oldCaches.map(name => caches.delete(name)));
+              }
+            })
+            .catch((e) => console.log("ℹ️ Cache management:", e.message));
+        }
       } catch (e) {
-        console.log("❌ Storage clear failed:", e);
+        console.log("ℹ️ Cache system not available");
       }
 
-      // Clear all caches immediately
-      if ("caches" in window) {
-        caches
-          .keys()
-          .then((cacheNames) => {
-            console.log("🗑️ Found caches:", cacheNames);
-            cacheNames.forEach((cacheName) => {
-              console.log("🗑️ Deleting cache:", cacheName);
-              caches.delete(cacheName);
-            });
-          })
-          .catch((e) => console.log("❌ Cache clear failed:", e));
-      }
-
-      // Unregister service workers immediately
+      // Register service worker for better performance
       if ("serviceWorker" in navigator) {
-        navigator.serviceWorker
-          .getRegistrations()
-          .then((registrations) => {
-            console.log("🔧 Found service workers:", registrations.length);
-            registrations.forEach((registration) => {
-              console.log("🔧 Unregistering service worker:", registration);
-              registration.unregister();
-            });
+        navigator.serviceWorker.register("./sw.js")
+          .then((registration) => {
+            console.log("✅ Service worker registered:", registration.scope);
           })
-          .catch((e) => console.log("❌ Service worker unregister failed:", e));
-      }
-
-      // Force reload if this is a refresh
-      if (performance.navigation.type === 1) {
-        console.log("🔄 Page was refreshed, forcing hard reload...");
-        window.location.reload(true);
+          .catch((error) => {
+            console.log("ℹ️ Service worker registration:", error.message);
+          });
       }
 
       // Hide loading screen when game starts
@@ -154,23 +140,27 @@
           }
         }, 3000); // Increased timeout for asset loading
       });
-      // Add error handling for failed asset loads
+      // Enhanced error handling for network issues
       window.addEventListener("error", (event) => {
-        if (
-          event.target.tagName === "IMG" ||
-          event.target.tagName === "AUDIO"
-        ) {
-          console.error("Asset failed to load:", event.target.src);
-          const loading = document.getElementById("loading");
-          if (loading && !loading.classList.contains("error")) {
-            loading.innerHTML = `
-              <h2>🌱 NASA Farming Game</h2>
-              <p style="color: #ffaa00;">Loading assets...</p>
-              <p style="color: #ff4444;">Some assets failed to load. The game may not work properly.</p>
-            `;
-            loading.classList.add("error");
-          }
+        if (event.target.tagName === "SCRIPT" && event.target.src.includes("NDVImap.js")) {
+          console.warn("Network issue loading NDVImap.js - will retry");
+          // Don't show error immediately, let the game continue
+          return;
         }
+        
+        if (event.target.tagName === "IMG" || event.target.tagName === "AUDIO") {
+          console.warn("Asset loading issue:", event.target.src);
+          // Continue game loading even if some assets fail
+        }
+      });
+
+      // Handle network connectivity changes
+      window.addEventListener("online", () => {
+        console.log("🌐 Network connection restored");
+      });
+
+      window.addEventListener("offline", () => {
+        console.log("📡 Network connection lost - game will work offline");
       });
     </script>
   </body>
