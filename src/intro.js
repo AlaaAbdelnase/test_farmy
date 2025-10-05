@@ -61,7 +61,10 @@ export default class introScene extends Phaser.Scene {
         volume: 0.15,
         loop: true,
       });
-      this.mainSoundtrack.play();
+      
+      // Try to play with user interaction fallback
+      this.tryPlaySoundtrack();
+      
       this.game.registry.set("mainSoundtrackPlaying", true);
       this.game.registry.set("mainSoundtrackInstance", this.mainSoundtrack);
     } else {
@@ -80,6 +83,7 @@ export default class introScene extends Phaser.Scene {
     // UI Elements
     this.createTitle();
     this.createSkipButton();
+    this.createAudioPrompt();
 
     // Characters and dialog
     this.createFarmerSprite();
@@ -743,6 +747,102 @@ export default class introScene extends Phaser.Scene {
     // Stop main soundtrack when leaving intro scene
     if (this.mainSoundtrack) {
       this.mainSoundtrack.stop();
+    }
+  }
+
+  tryPlaySoundtrack() {
+    // Try to play the soundtrack
+    try {
+      const playPromise = this.mainSoundtrack.play();
+      
+      // Handle promise-based play
+      if (playPromise && playPromise.catch) {
+        playPromise.catch(error => {
+          console.log("🎵 Audio autoplay blocked, will play on user interaction:", error.message);
+          // Set up click handler to start audio
+          this.setupAudioOnInteraction();
+        });
+      }
+    } catch (error) {
+      console.log("🎵 Audio play failed:", error.message);
+      this.setupAudioOnInteraction();
+    }
+  }
+
+  setupAudioOnInteraction() {
+    // Show audio prompt
+    this.showAudioPrompt();
+    
+    // Play audio on first user interaction
+    const playOnClick = () => {
+      try {
+        this.mainSoundtrack.play();
+        console.log("🎵 Soundtrack started on user interaction");
+        this.hideAudioPrompt();
+      } catch (error) {
+        console.log("🎵 Still can't play audio:", error.message);
+      }
+      // Remove the listener after first interaction
+      document.removeEventListener('click', playOnClick);
+      document.removeEventListener('touchstart', playOnClick);
+    };
+    
+    document.addEventListener('click', playOnClick);
+    document.addEventListener('touchstart', playOnClick);
+  }
+
+  createAudioPrompt() {
+    // Create audio prompt that will be shown if needed
+    this.audioPrompt = this.add.container(0, 0);
+    this.audioPrompt.setDepth(1000);
+    
+    const bg = this.add.rectangle(
+      this.sys.game.config.width / 2,
+      100,
+      300,
+      60,
+      0x000000,
+      0.8
+    ).setStrokeStyle(2, 0x00ff00);
+    
+    const text = this.add.text(
+      this.sys.game.config.width / 2,
+      100,
+      "Click anywhere to enable audio",
+      {
+        fontSize: "16px",
+        fontFamily: "Courier New",
+        color: "#00ff00",
+        align: "center"
+      }
+    ).setOrigin(0.5);
+    
+    this.audioPrompt.add([bg, text]);
+    this.audioPrompt.setVisible(false);
+  }
+
+  showAudioPrompt() {
+    if (this.audioPrompt) {
+      this.audioPrompt.setVisible(true);
+      // Fade in animation
+      this.tweens.add({
+        targets: this.audioPrompt,
+        alpha: 1,
+        duration: 500
+      });
+    }
+  }
+
+  hideAudioPrompt() {
+    if (this.audioPrompt) {
+      this.tweens.add({
+        targets: this.audioPrompt,
+        alpha: 0,
+        duration: 500,
+        onComplete: () => {
+          this.audioPrompt.setVisible(false);
+        }
+      });
     }
   }
 }
