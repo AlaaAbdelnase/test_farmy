@@ -1,6 +1,6 @@
 import * as Phaser from "https://cdn.jsdelivr.net/npm/phaser@3.70.0/dist/phaser.esm.js";
 import { SalinizedFarmScene } from "./SalinizedFarmScene.js";
-import NDVIMapScene from "./NDVIMap.js";
+import NDVIMapScene from "./NDVImap.js";
 
 export class Game extends Phaser.Scene {
   constructor() {

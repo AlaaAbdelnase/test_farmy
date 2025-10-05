@@ -11,7 +11,7 @@ import WaterScene from "./waterScene.js";
 import waterGame from "./waterGame.js";
 import { DroughtScene, PlayScene, ResultScene } from "./drought.js";
 import { SalinizedFarmScene } from "./SalinizedFarmScene.js";
-import NDVIMapScene from "./NDVIMap.js";
+import NDVIMapScene from "./NDVImap.js";
 import { Game } from "./Start.js";
 import { LoadingManager, AssetOptimizer } from "./LoadingManager.js";
 
