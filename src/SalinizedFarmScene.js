@@ -15,19 +15,19 @@ export class SalinizedFarmScene extends Phaser.Scene {
 
   preload() {
     // Load all sprite sheets in preload
-    this.load.spritesheet("farmerMen", "./assets/farmerr.png", {
+    this.load.spritesheet("farmerMen", "./assets/farmerMen.png", {
       frameWidth: 32,
       frameHeight: 32,
     });
-    this.load.spritesheet("salty_wheat", "./assets/cropspritesheet.png", {
+    this.load.spritesheet("salty_wheat", "./assets/salty_wheat.png", {
       frameWidth: 384,
       frameHeight: 1024,
     });
-    this.load.spritesheet("water_wheat", "./assets/cropspritesheet.png", {
+    this.load.spritesheet("water_wheat", "./assets/water_wheat.png", {
       frameWidth: 384,
       frameHeight: 1024,
     });
-    this.load.spritesheet("green_wheat", "./assets/cropspritesheet.png", {
+    this.load.spritesheet("green_wheat", "./assets/green_wheat.png", {
       frameWidth: 384,
       frameHeight: 1024,
     });

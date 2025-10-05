@@ -18,7 +18,7 @@ export class Game extends Phaser.Scene {
     this.load.image("egypt_after", "./assets/farm_2021.jpg");
     this.load.image("fala7", "./assets/fala7.png");
     // Load farmer spritesheet
-    this.load.spritesheet("farmerMen", "./assets/farmerr.png", {
+    this.load.spritesheet("farmerMen", "./assets/farmerMen.png", {
       frameWidth: 32,
       frameHeight: 32,
     });
@@ -43,8 +43,7 @@ export class Game extends Phaser.Scene {
     // Add background story text
     this.createStoryText();
 
-    // Removed farmer character creation
-
+    this.createFarmer();
     this.createNDVIButton();
     this.createExploreButton();
     this.createBackButton();
@@ -390,9 +389,33 @@ export class Game extends Phaser.Scene {
     });
   }
 
-  createFarmer() {
-    // Removed moving farmer between images - keeping only fala7 farmer in story text
-  }
+ createFarmer() {
+                const { width, height } = this.scale;
+                
+                // Create farmer animations
+                this.anims.create({
+                    key: 'walk',
+                    frames: this.anims.generateFrameNumbers('farmerMen', { start: 0, end: 3 }),
+                    frameRate: 8,
+                    repeat: -1
+                });
+
+                // Create farmer sprite in the middle, between images
+                const farmer = this.add.sprite(width/2, height/2 - 200, 'farmerMen').setScale(2);
+                
+                // Move up and down between images
+                this.tweens.add({
+                    targets: farmer,
+                    y: height/2 + 10,
+                    duration: 3000,
+                    ease: 'Linear',
+                    yoyo: true,
+                    repeat: -1
+                });
+
+                // Play walking animation
+                farmer.play('walk');
+            }  
 
   typewriteText(x, y, text, onComplete) {
     const content = this.add
@@ -505,6 +528,11 @@ export class Game extends Phaser.Scene {
       .setOrigin(0.5);
 
     // Removed farmer from popup
+      // Add smaller farmer to popup
+      const farmerPopup = this.add.sprite(-100, 0, 'farmer').setScale(1.5);
+      farmerPopup.play('walk');
+      popupContainer.add([popupBg, popupText, farmerPopup]);
+
     popupContainer.add([popupBg, popupText]);
 
     popupContainer.setVisible(false);
