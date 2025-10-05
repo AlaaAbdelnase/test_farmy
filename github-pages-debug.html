@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GitHub Pages Debug - NASA Farming Game</title>
+    <style>
+        body {
+            font-family: 'Courier New', monospace;
+            background: #0f0f23;
+            color: #00ff00;
+            margin: 20px;
+            line-height: 1.6;
+        }
+        .debug-item {
+            margin: 15px 0;
+            padding: 10px;
+            border: 1px solid #00ff00;
+            border-radius: 5px;
+            background: rgba(0, 255, 0, 0.1);
+        }
+        .success { color: #00ff00; }
+        .error { color: #ff4444; }
+        .warning { color: #ffaa00; }
+        .info { color: #44aaff; }
+        button {
+            background: #00ff00;
+            color: #000;
+            border: none;
+            padding: 10px 20px;
+            margin: 5px;
+            cursor: pointer;
+            font-family: inherit;
+        }
+        button:hover { background: #00cc00; }
+        #results { margin-top: 20px; }
+    </style>
+</head>
+<body>
+    <h1>🌱 GitHub Pages Deployment Debug Tool</h1>
+    
+    <div class="debug-item info">
+        <h3>📋 Quick Checklist:</h3>
+        <ul>
+            <li>✅ Repository name: <span id="repo-name">Checking...</span></li>
+            <li>✅ GitHub Pages URL: <span id="pages-url">Checking...</span></li>
+            <li>✅ Main file exists: <span id="main-file">Checking...</span></li>
+            <li>✅ Assets accessible: <span id="assets-check">Checking...</span></li>
+        </ul>
+    </div>
+
+    <button onclick="runDiagnostics()">🔍 Run Full Diagnostics</button>
+    <button onclick="testAssetPaths()">🎮 Test Game Assets</button>
+    <button onclick="checkConsole()">📊 Check Browser Console</button>
+    
+    <div id="results"></div>
+
+    <script>
+        function addResult(title, status, message) {
+            const results = document.getElementById('results');
+            const div = document.createElement('div');
+            div.className = `debug-item ${status}`;
+            div.innerHTML = `<strong>${title}:</strong> ${message}`;
+            results.appendChild(div);
+        }
+
+        function runDiagnostics() {
+            document.getElementById('results').innerHTML = '';
+            
+            // Check if we're on GitHub Pages
+            const isGitHubPages = window.location.hostname.includes('github.io');
+            addResult('GitHub Pages Detection', isGitHubPages ? 'success' : 'warning', 
+                isGitHubPages ? 'Running on GitHub Pages' : 'Running locally or different host');
+
+            // Check repository name
+            const pathParts = window.location.pathname.split('/');
+            const repoName = pathParts[1] || 'unknown';
+            document.getElementById('repo-name').textContent = repoName;
+            document.getElementById('pages-url').textContent = window.location.href;
+
+            // Test main file
+            fetch('./index.html')
+                .then(response => {
+                    addResult('Main File (index.html)', response.ok ? 'success' : 'error', 
+                        response.ok ? 'Found and accessible' : `Error: ${response.status}`);
+                    document.getElementById('main-file').textContent = response.ok ? '✅ Found' : '❌ Missing';
+                })
+                .catch(error => {
+                    addResult('Main File (index.html)', 'error', `Network error: ${error.message}`);
+                    document.getElementById('main-file').textContent = '❌ Error';
+                });
+
+            // Test critical assets
+            const criticalAssets = [
+                './src/main.js',
+                './assets/introbg.jpg',
+                './assets/farmerr.png',
+                './sw.js'
+            ];
+
+            let assetsLoaded = 0;
+            criticalAssets.forEach(asset => {
+                fetch(asset)
+                    .then(response => {
+                        assetsLoaded++;
+                        addResult(`Asset: ${asset}`, response.ok ? 'success' : 'error', 
+                            response.ok ? 'Loaded successfully' : `Error: ${response.status}`);
+                    })
+                    .catch(error => {
+                        assetsLoaded++;
+                        addResult(`Asset: ${asset}`, 'error', `Network error: ${error.message}`);
+                    });
+            });
+
+            // Check after a delay
+            setTimeout(() => {
+                document.getElementById('assets-check').textContent = 
+                    assetsLoaded === criticalAssets.length ? '✅ All accessible' : '⚠️ Some issues';
+            }, 2000);
+        }
+
+        function testAssetPaths() {
+            document.getElementById('results').innerHTML = '';
+            addResult('Asset Path Test', 'info', 'Testing all game asset paths...');
+            
+            const gameAssets = [
+                './src/main.js',
+                './src/intro.js',
+                './src/NDVImap.js',
+                './assets/introbg.jpg',
+                './assets/farmerr.png',
+                './assets/click.mp3',
+                './assets/sound/main_soundtrack.mp3'
+            ];
+
+            gameAssets.forEach(asset => {
+                fetch(asset)
+                    .then(response => {
+                        addResult(`🎮 ${asset}`, response.ok ? 'success' : 'error', 
+                            response.ok ? 'Ready for game' : `Game may not work: ${response.status}`);
+                    })
+                    .catch(error => {
+                        addResult(`🎮 ${asset}`, 'error', `Critical error: ${error.message}`);
+                    });
+            });
+        }
+
+        function checkConsole() {
+            addResult('Console Check', 'info', 
+                'Open browser console (F12) and look for red error messages. Any errors should be reported.');
+        }
+
+        // Auto-run basic checks
+        window.addEventListener('load', () => {
+            document.getElementById('repo-name').textContent = 'test_farmy';
+            document.getElementById('pages-url').textContent = window.location.href;
+        });
+    </script>
+</body>
+</html>
